@@ -1,0 +1,26 @@
+name: commit4me daily
+
+on:
+  schedule:
+    - cron: "40 10 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Daily contribution
+        run: |
+          git config user.name "commit4me"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          COUNT=8
+          for i in $(seq 1 "$COUNT"); do
+            echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)-$i" >> ACTIVITY.log
+            git add ACTIVITY.log
+            git commit -m " ($i/$COUNT)" || true
+          done
+          git push
